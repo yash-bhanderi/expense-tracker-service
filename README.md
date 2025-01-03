@@ -71,3 +71,8 @@ This service is designed to serve as the backend for a web application that help
    ```bash
    git clone https://github.com/yash-bhanderi/expense-tracker-service.git
    cd expense-tracker-service
+
+### Database setup
+  ```bash
+  dotnet ef migrations add InitialCreate
+  dotnet ef database update
