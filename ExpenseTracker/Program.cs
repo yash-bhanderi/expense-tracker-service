@@ -1,7 +1,6 @@
 using System.Text;
 using ExpenseTracker.Database;
 using ExpenseTracker.Repositories;
-using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,8 +13,6 @@ builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<ExpenseService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
