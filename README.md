@@ -12,7 +12,7 @@ This service is designed to serve as the backend for a web application that help
 ### Built With 
 
 * [net8.0.0](https://dotnet.microsoft.com/download/dotnet/8.0)
-* [AutoMapper.Extensions.Microsoft.DependencyInjection] (https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1)
+* [AutoMapper.Extensions.Microsoft.DependencyInjection](https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1)
 * [BCrypt.Net-Next](https://www.nuget.org/packages/BCrypt.Net-Next/4.0.3)
 * [Microsoft.AspNetCore.Authentication.Google](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.Google/8.0.7)
 * [Microsoft.AspNetCore.Authentication.JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer/8.0.4)
