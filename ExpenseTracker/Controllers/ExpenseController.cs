@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using ExpenseTracker.Database;
+using ExpenseTracker.Repositories;
 
 namespace ExpenseTracker.Controllers
 {
@@ -14,10 +15,12 @@ namespace ExpenseTracker.Controllers
     public class ExpenseController : ControllerBase
     {
         private readonly ExpenseTrackerDbContext _context;
+        private readonly IExpenseRepository _expenseRepository;
 
-        public ExpenseController(ExpenseTrackerDbContext context)
+        public ExpenseController(ExpenseTrackerDbContext context, IExpenseRepository expenseRepository)
         {
             _context = context;
+            _expenseRepository = expenseRepository;
         }
 
         // Get all expenses for the logged-in user
@@ -26,11 +29,7 @@ namespace ExpenseTracker.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var expenses = await _context.Expenses
-                .Where(e => e.UserId == userId)
-                .Include(e => e.Category) // Include category details
-                .ToListAsync();
-
+            var expenses = await _expenseRepository.GetExpensesByUserIdAsync(userId);
             return Ok(expenses);
         }
 
@@ -38,11 +37,7 @@ namespace ExpenseTracker.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetExpense(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-            var expense = await _context.Expenses
-                .Include(e => e.Category) // Include category details
-                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
 
             if (expense == null)
                 return NotFound();
@@ -65,8 +60,7 @@ namespace ExpenseTracker.Controllers
                 UserId = userId             // Link to the logged-in user
             };
 
-            _context.Expenses.Add(expense);
-            await _context.SaveChangesAsync();
+            await _expenseRepository.AddExpenseAsync(expense);
 
             return CreatedAtAction(nameof(GetExpense), new { id = expense.Id }, expense);
         }
@@ -88,27 +82,23 @@ namespace ExpenseTracker.Controllers
             expense.Description = dto.Description;
             expense.CategoryId = dto.CategoryId; // Update category
 
-            await _context.SaveChangesAsync();
+            await _expenseRepository.UpdateExpenseAsync(expense);
 
-            return Ok(expense);
+            return Ok("Expense updated successfully: " + id);
         }
 
         // Delete an expense
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteExpense(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-            var expense = await _context.Expenses
-                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
 
             if (expense == null)
                 return NotFound();
+            
+            await _expenseRepository.DeleteExpenseAsync(id);
 
-            _context.Expenses.Remove(expense);
-            await _context.SaveChangesAsync();
-
-            return Ok("Expense deleted successfully.");
+            return Ok("Expense deleted successfully: " + id);
         }
     }
 }

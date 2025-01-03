@@ -8,6 +8,7 @@ using System.Text;
 using ExpenseTracker.Database;
 using ExpenseTracker.Dtos.Auth;
 using ExpenseTracker.Models;
+using ExpenseTracker.Repositories;
 
 namespace ExpenseTracker.Controllers
 {
@@ -15,19 +16,19 @@ namespace ExpenseTracker.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ExpenseTrackerDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthController(ExpenseTrackerDbContext context, IConfiguration configuration)
+        public AuthController(IUserRepository userRepository, IConfiguration configuration)
         {
-            _context = context;
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
+            if (await _userRepository.GetUserByEmailAsync(dto.Email) != null)
                 return BadRequest("User already exists.");
 
             var user = new User()
@@ -38,15 +39,14 @@ namespace ExpenseTracker.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.AddUserAsync(user);
             return Ok("User registered successfully.");
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
+            var user = await _userRepository.GetUserByEmailAsync(dto.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials.");
 
@@ -57,7 +57,7 @@ namespace ExpenseTracker.Controllers
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.GoogleId == dto.GoogleId);
+            var user = await _userRepository.GetUserByEmailAsync(dto.Email);
             if (user == null)
             {
                 user = new User
@@ -67,8 +67,7 @@ namespace ExpenseTracker.Controllers
                     GoogleId = dto.GoogleId,
                     CreatedAt = DateTime.UtcNow
                 };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+                await _userRepository.AddUserAsync(user);
             }
 
             var token = GenerateJwtToken(user);
@@ -77,7 +76,7 @@ namespace ExpenseTracker.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var claims = new[]
+            var claims = new[] 
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),

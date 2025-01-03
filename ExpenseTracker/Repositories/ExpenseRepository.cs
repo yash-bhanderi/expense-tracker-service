@@ -20,7 +20,7 @@ namespace ExpenseTracker.Repositories
 
         public async Task<Expense> GetExpenseByIdAsync(int id)
         {
-            return await _context.Expenses.FindAsync(id);
+            return await _context.Expenses.Where(e => e.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task AddExpenseAsync(Expense expense)
@@ -35,8 +35,9 @@ namespace ExpenseTracker.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteExpenseAsync(Expense expense)
+        public async Task DeleteExpenseAsync(int id)
         {
+            var expense = await _context.Expenses.Where(e => e.Id == id).FirstOrDefaultAsync();
             _context.Expenses.Remove(expense);
             await _context.SaveChangesAsync();
         }
