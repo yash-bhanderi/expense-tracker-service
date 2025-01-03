@@ -7,7 +7,7 @@ We prioritize the security of our project and appreciate your assistance in iden
 1. **Avoid Public Disclosure**: Do not share details of the vulnerability on public platforms such as forums, social media, or any other publicly accessible channels.  
    
 2. **Contact Us Directly**: Email the vulnerability details to **yash.bhanderi@marutitech.com**. Please include the following information:
-   - A clear and detailed description of the vulnerability.
+   - A clear and detailed description of the vulnerability. 
    - Steps or methods to reproduce the issue.
    - An assessment of the potential impact and severity of the vulnerability.
    - Any additional insights or information to help us address the issue efficiently.
