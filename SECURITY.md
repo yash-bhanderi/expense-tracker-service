@@ -16,4 +16,4 @@ We prioritize the security of our project and appreciate your assistance in iden
 
 For further questions or support, feel free to reach out to our security team at **yash.bhanderi@marutitech.com**.
 
-Thank you for contributing to the security and reliability of our project. 
+Thank you for contributing to the security and reliability of our project.

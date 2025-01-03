@@ -36,7 +36,7 @@ This service is designed to serve as the backend for a web application that help
   - Food
   - Travel
   - Utilities
-  - Entertainment
+  - Entertainment 
   - Others
 
 ### 4. Summary by Category
