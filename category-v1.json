@@ -1,0 +1,183 @@
+{
+"openapi": "3.1.0",
+"info": {
+"title": "Expense Tracker Category API",
+"version": "1.0",
+"description": "API for managing expense categories in the Expense Tracker application"
+},
+"overview": {
+"purpose": "Provides comprehensive management of expense categories",
+"key_features": [
+"Create, read, update, and delete (CRUD) category operations",
+"Supports category description and naming",
+"Maintains relationship with expenses"
+],
+"authentication": "No explicit authentication mechanism defined in the current implementation"
+},
+"servers": [
+{
+"url": "https://api.expensetracker.com",
+"description": "Production Server"
+}
+],
+"paths": {
+"/api/category": {
+"get": {
+"summary": "List all categories",
+"responses": {
+"200": {
+"description": "Successfully retrieved categories",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Category"
+}
+}
+}
+}
+}
+}
+},
+"post": {
+"summary": "Create a new category",
+"requestBody": {
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CategoryCreateDto"
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Category successfully created"
+},
+"400": {
+"description": "Category with same name already exists"
+}
+}
+}
+},
+"/api/category/{id}": {
+"get": {
+"summary": "Retrieve a specific category",
+"parameters": [
+{
+"name": "id",
+"in": "path",
+"required": true,
+"schema": {
+"type": "integer"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Successfully retrieved category"
+},
+"404": {
+"description": "Category not found"
+}
+}
+},
+"put": {
+"summary": "Update an existing category",
+"parameters": [
+{
+"name": "id",
+"in": "path",
+"required": true,
+"schema": {
+"type": "integer"
+}
+}
+],
+"requestBody": {
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CategoryCreateDto"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Category successfully updated"
+},
+"404": {
+"description": "Category not found"
+}
+}
+},
+"delete": {
+"summary": "Delete a category",
+"parameters": [
+{
+"name": "id",
+"in": "path",
+"required": true,
+"schema": {
+"type": "integer"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Category successfully deleted"
+},
+"404": {
+"description": "Category not found"
+}
+}
+}
+}
+},
+"components": {
+"schemas": {
+"Category": {
+"type": "object",
+"properties": {
+"id": {
+"type": "integer"
+},
+"name": {
+"type": "string"
+},
+"description": {
+"type": "string"
+},
+"expenses": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Expense"
+}
+}
+}
+},
+"CategoryCreateDto": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string"
+},
+"description": {
+"type": "string"
+}
+},
+"required": ["name"]
+},
+"Expense": {
+"type": "object",
+"properties": {
+"id": {
+"type": "integer"
+}
+}
+}
+}
+}
+}

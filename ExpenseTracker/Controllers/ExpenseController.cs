@@ -14,12 +14,10 @@ namespace ExpenseTracker.Controllers
     [Route("api/[controller]")]
     public class ExpenseController : ControllerBase
     {
-        private readonly ExpenseTrackerDbContext _context;
         private readonly IExpenseRepository _expenseRepository;
 
-        public ExpenseController(ExpenseTrackerDbContext context, IExpenseRepository expenseRepository)
+        public ExpenseController(IExpenseRepository expenseRepository)
         {
-            _context = context;
             _expenseRepository = expenseRepository;
         }
 
@@ -71,8 +69,7 @@ namespace ExpenseTracker.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var expense = await _context.Expenses
-                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
 
             if (expense == null)
                 return NotFound();

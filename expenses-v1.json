@@ -1,0 +1,363 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Expense Tracker",
+    "version": "1.0",
+    "description": "An API for tracking and managing expenses. This includes operations for retrieving, creating, updating, and deleting expense records."
+  },
+  "servers": [
+{
+"url": "https://api.expensetracker.com",
+"description": "Production Server"
+}
+],
+  "paths": {
+    "/v1/expenses": {
+      "get": {
+        "summary": "List all expenses",
+        "tags": [
+          "Expenses"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Expense ID."
+                      },
+                      "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Expense amount."
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Expense date."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Expense description."
+                      },
+                      "category": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "Category ID."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Category name."
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "amount",
+                      "date",
+                      "category"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "getExpenses",
+        "description": "Retrieves all expenses for the currently logged-in user, with category details included.",
+        "security": []
+      },
+      "post": {
+        "summary": "Add a new expense",
+        "tags": [
+          "Expenses"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Amount of the expense."
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Date of the expense."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the expense."
+                  },
+                  "categoryId": {
+                    "type": "integer",
+                    "description": "ID of the category associated with the expense."
+                  }
+                },
+                "required": [
+                  "amount",
+                  "date",
+                  "categoryId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "addExpense",
+        "description": "Creates a new expense record associated with the logged-in user."
+      }
+    },
+    "/v1/expenses/{id}": {
+      "get": {
+        "summary": "Retrieve an expense",
+        "tags": [
+          "Expenses"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the expense to retrieve.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Expense not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "getExpenseById",
+        "description": "Retrieves a specific expense by its ID, for the logged-in user.",
+        "security": []
+      },
+      "put": {
+        "summary": "Update an existing expense",
+        "tags": [
+          "Expenses"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the expense to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Amount of the expense."
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Date of the expense."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the expense."
+                  },
+                  "categoryId": {
+                    "type": "integer",
+                    "description": "ID of the category associated with the expense."
+                  }
+                },
+                "required": [
+                  "amount",
+                  "date",
+                  "categoryId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Expense updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Expense not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "updateExpense",
+        "description": "Updates an existing expense record.",
+        "security": []
+      },
+      "delete": {
+        "summary": "Delete an expense",
+        "tags": [
+          "Expenses"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the expense to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expense deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Expense not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "deleteExpense",
+        "description": "Deletes an expense record.",
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Expense ID"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Expense amount"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expense date"
+          },
+          "description": {
+            "type": "string",
+            "description": "Expense description"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Category ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Category name"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {}
+  }
+}
