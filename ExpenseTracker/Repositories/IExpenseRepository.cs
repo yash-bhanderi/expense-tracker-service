@@ -9,5 +9,6 @@ namespace ExpenseTracker.Repositories
         Task AddExpenseAsync(Expense expense);
         Task UpdateExpenseAsync(Expense expense);
         Task DeleteExpenseAsync(int id);
+        Task<List<Expense>> SearchExpenseAsync(string name);
     }
 }

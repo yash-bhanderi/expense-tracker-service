@@ -10,6 +10,6 @@
         public DateTime CreatedAt { get; set; }
 
         // Navigation property for related expenses
-        public ICollection<Expense> Expenses { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace ExpenseTracker.Controllers
 
             await _expenseRepository.AddExpenseAsync(expense);
 
-            return CreatedAtAction(nameof(GetExpense), new { id = expense.Id }, expense);
+            return CreatedAtAction(nameof(GetExpense), new { id = expense.Id });
         }
 
         // Update an existing expense
@@ -99,6 +99,18 @@ namespace ExpenseTracker.Controllers
             await _expenseRepository.DeleteExpenseAsync(id);
 
             return Ok("Expense deleted successfully: " + id);
+        }
+        
+        // Search expenses
+        [HttpGet("{description}")]
+        public async Task<IActionResult> SearchExpense(string description)
+        {
+            var expenses = await _expenseRepository.SearchExpenseAsync(description);
+
+            if (expenses == null)
+                return Ok();
+            
+            return Ok(expenses);
         }
     }
 }

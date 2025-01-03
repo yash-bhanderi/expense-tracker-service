@@ -15,19 +15,29 @@ namespace ExpenseTracker.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure User-Expense relationship
+            // Configuring the relationship between User and Expense (One to Many)
             modelBuilder.Entity<Expense>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Expenses)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // When a User is deleted, their Expenses are also deleted
 
-            // Configure Category-Expense relationship
+            // Configuring the relationship between Category and Expense (One to Many)
             modelBuilder.Entity<Expense>()
                 .HasOne(e => e.Category)
                 .WithMany(c => c.Expenses)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull); // If a Category is deleted, the CategoryId in Expense is set to null
+
+            // Ensuring no nulls for Category's Description property
+            modelBuilder.Entity<Category>()
+                .Property(c => c.Description)
+                .IsRequired(false); // Set to false if Description is optional
+
+            // Indexes and other configurations if needed
+            modelBuilder.Entity<Expense>()
+                .HasIndex(e => e.Description)
+                .HasDatabaseName("Index_Description");
 
             base.OnModelCreating(modelBuilder);
         }
